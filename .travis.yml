@@ -1,0 +1,17 @@
+language: generic
+services: docker
+before_install:
+  - docker build -t ukran1um/docker-react -f ./client/Dockerfile.dev .
+script:
+  - docker run -e CI=true ukran1um/react-test npm test
+after_success:
+  - docker build -t ukran1um/multi-client ./client
+  - docker build -t ukran1um/multi-server ./server
+  - docker build -t ukran1um/multi-nginx ./nginx
+  - docker build -t ukran1um/multi-worker ./worker
+  #login to docker cli
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  - docker push ukran1um/multi-client
+  - docker push ukran1um/multi-nginx
+  - docker push ukran1um/mutli-worker
+  - docker push ukran1um/multi-server
