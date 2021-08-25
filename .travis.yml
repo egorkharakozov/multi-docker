@@ -1,9 +1,11 @@
 language: generic
-services: docker
+sudo: required
+services: 
+  - docker
 before_install:
   - docker build -t ukran1um/docker-react -f ./client/Dockerfile.dev .
 script:
-  - docker run -e CI=true ukran1um/react-test npm test
+  - docker run -e CI=true ukran1um/docker-react npm test
 after_success:
   - docker build -t ukran1um/multi-client ./client
   - docker build -t ukran1um/multi-server ./server
